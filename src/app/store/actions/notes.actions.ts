@@ -3,6 +3,7 @@ import {createAction, props} from '@ngrx/store';
 export interface NoteEditableInfo {
   title: string;
   description: string;
+  isEditing: boolean;
 }
 
 export interface NoteInfo extends NoteEditableInfo {
@@ -36,8 +37,15 @@ export const create = createAction(
   props<NoteInfo>(),
 );
 
-export const edit = createAction(
-  '[Note] Edit',
+export const startEditing = createAction(
+  '[Note] Start Editing',
+  props<{
+    id: number;
+  }>(),
+);
+
+export const saveEdited = createAction(
+  '[Note] Save Edited',
   props<{
     id: number;
     noteInfo: NoteEditableInfo;
