@@ -11,6 +11,7 @@ $spacers: (
   6: ($spacer * 1.5),
   7: ($spacer * 2),
   8: ($spacer * 3),
+  9: ($spacer * 4),
 );
 
 @import "~bootstrap/scss/functions";
@@ -35,6 +36,10 @@ html, body {
 body {
   margin: 0;
   background: $page-bg;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 ::placeholder {

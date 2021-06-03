@@ -5,7 +5,8 @@
 }
 
 input[type="text"] {
-  @extend .p-2;
+  @extend .py-2;
+  @extend .px-3;
 
   font-size: $font-size-sm;
   border: 2px solid $input-border-color;
@@ -25,9 +26,9 @@ input.input-search {
 
   font-size: $font-size-base;
   border: 2px solid $input-border-color;
-  height: 60px;
+  height: 62px;
   width: 375px;
-  border-radius: 30px;
+  border-radius: 31px;
 }
 
 .input-with-icon {
@@ -46,12 +47,14 @@ input.input-search {
 }
 
 textarea {
-  @extend .p-2;
+  @extend .py-2;
+  @extend .px-3;
   @extend .w-100;
 
   min-height: 106px;
   resize: none;
   overflow: auto;
+  font-size: $font-size-sm;
   border-radius: $block-border-radius;
   border: 2px solid $input-border-color;
   background: $input-bg;

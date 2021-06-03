@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {environment as env} from '@env';
 import {Router} from '@angular/router';
-import {hasOwn} from '@app/helpers';
+import {hasOwn} from '../../helpers';
 
 export type HttpParam = number | string | null;
 export type HttpParamsItem = HttpParam | HttpParams | HttpParams[] | FormData;
@@ -50,31 +50,31 @@ export class RestApiService {
     return result;
   }
 
-  protected async get<T>(
+  public async get<T>(
     action: string,
     params: HttpParams = {}): Promise<T> {
     return this.req<T>('GET', action, params);
   }
 
-  protected async post<T>(
+  public async post<T>(
     action: string,
     params: HttpParams = {}): Promise<T> {
     return this.req<T>('POST', action, params);
   }
 
-  protected async put<T>(
+  public async put<T>(
     action: string,
     params: HttpParams = {}): Promise<T> {
     return this.req<T>('PUT', action, params);
   }
 
-  protected async create<T>(
+  public async create<T>(
     action: string,
     params: HttpParams = {}): Promise<T> {
     return this.req<T>('CREATE', action, params);
   }
 
-  protected async delete<T>(
+  public async delete<T>(
     action: string,
     params: HttpParams = {}): Promise<T> {
     return this.req<T>('DELETE', action, params);
@@ -98,7 +98,6 @@ export class RestApiService {
         }),
         observe: 'response',
         responseType: 'json',
-        withCredentials: true,
         reportProgress: false,
         ...addOptions,
       }).toPromise();

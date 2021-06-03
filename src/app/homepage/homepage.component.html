@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid px-9">
   <div class="row pt-7 pb-6">
     <div class="col">
       <img class="logo" src="assets/logo.png" alt="DISQO">
@@ -26,11 +26,11 @@
       <div class="note-block p-6">
         <h6 class="mt-0 mb-6 fw-bold ps-1">Create Note</h6>
         <div class="input-group pb-4">
-          <label for="new-note-title" class="ps-1"><small>Note title</small></label>
+          <label for="new-note-title" class="ps-1 d-block"><small>Note title</small></label>
           <input id="new-note-title" type="text" name="new-note-title">
         </div>
         <div class="input-group pb-4">
-          <label for="new-note-text" class="ps-1"><small>Note</small></label>
+          <label for="new-note-text" class="ps-1 d-block"><small>Note</small></label>
           <textarea id="new-note-text"></textarea>
         </div>
         <div class="input-group pt-2">
@@ -42,10 +42,23 @@
     </div>
     <div class="col">
       <div class="note-block p-5 mb-5">
-        <h6 class="mt-0 mb-6 fw-bold">Note title</h6>
-        <span class="input-group pt-2">
+        <div class="mb-4 d-flex justify-content-between">
+          <h6 class="m-0 fw-bold">Note title</h6>
+          <div>
+            <fa-icon class="cursor-pointer ms-3" [icon]="faPen"></fa-icon>
+            <fa-icon class="cursor-pointer ms-3" [icon]="faTrash"></fa-icon>
+          </div>
+        </div>
+        <span class="text-inactive pt-2">
           Note text
         </span>
+      </div>
+      <div class="note-block p-5 mb-5">
+        <input class="mb-4" id="edit-note-title" type="text" name="edit-note-title" value="Note title">
+        <textarea class="mb-4" id="edit-note-text">Note text</textarea>
+        <button type="submit">
+          Save
+        </button>
       </div>
     </div>
     <div class="col">
