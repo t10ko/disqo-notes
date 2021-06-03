@@ -1,4 +1,4 @@
-<div class="container-fluid px-9">
+<div class="container-fluid px-xl-9 px-lg-7 px-md-6 px-sm-4 px-xs-2">
   <div class="row pt-7 pb-6">
     <div class="col">
       <img class="logo" src="assets/logo.png" alt="DISQO">
@@ -6,7 +6,7 @@
   </div>
   <div class="row pt-3 pb-6">
     <div class="col">
-      <div class="input-with-icon">
+      <div class="input-with-icon input-search">
         <input
           [formControl]="searchText"
           (input)="onSearchTextChanged()"
@@ -24,8 +24,8 @@
     </div>
   </div>
   <div class="row pt-3 pb-8">
-    <div class="col">
-      <div class="note-block p-6">
+    <div class="col-xl-4 col-12">
+      <div class="note-block p-6 mb-5">
         <h6 class="mt-0 mb-6 fw-bold ps-1">Create Note</h6>
         <app-note-form
           [showPlaceholders]="true"
@@ -34,15 +34,43 @@
           buttonLabel="Create"></app-note-form>
       </div>
     </div>
-    <div class="col">
+    <div class="col-xl-4 col-12">
+      <h4 class="d-xl-none my-4">
+        Notes:
+      </h4>
       <app-note
         *ngFor="let id of displayNotesWithId;"
         [note]="(allNotes$ | async)[id]"
         containerClass="mb-5"
       ></app-note>
     </div>
-    <div class="col">
+    <div class="col-xl-4 col-12">
+      <h4 class="d-xl-none my-4">
+        Statistics:
+      </h4>
       <div class="note-block p-5 notes-chart">
+        <span class="d-inline-block mb-4 ms-1">
+          Notes creation chart
+        </span>
+        <div class="d-flex flex-direction-row position-relative">
+          <div class="ps-4">
+            <span class="chart-y-label">
+              Number of notes
+            </span>
+          </div>
+          <div class="flex-grow-1 flex-shrink-0">
+            <apx-chart
+              [series]="chartOptions.series"
+              [chart]="chartOptions.chart"
+              [xaxis]="chartOptions.xaxis"
+              [dataLabels]="chartOptions.dataLabels"
+              [grid]="chartOptions.grid"
+              [stroke]="chartOptions.stroke"
+              [markers]="chartOptions.markers"
+              [tooltip]="chartOptions.tooltip"
+            ></apx-chart>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 
@@ -7,12 +7,13 @@ import * as noteSelectors from '@store/selectors/notes.selectors';
 
 import {asyncScheduler, Observable, Subject} from 'rxjs';
 import {Store} from '@ngrx/store';
+import {throttleTime} from 'rxjs/operators';
+import {ApexOptions, ChartComponent} from 'ng-apexcharts';
 
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
 
 import {NotesService} from '@services/notes/notes.service';
 import {NotesState} from '@store/reducers/notes.reducers';
-import {throttleTime} from 'rxjs/operators';
 
 @Component({
   selector: 'app-homepage',
@@ -20,6 +21,8 @@ import {throttleTime} from 'rxjs/operators';
   styleUrls: ['./homepage.component.scss']
 })
 export class HomepageComponent implements OnInit {
+  @ViewChild('chart') chart: ChartComponent;
+
   isLoading = true;
 
   faSearch = faSearch;
@@ -30,12 +33,62 @@ export class HomepageComponent implements OnInit {
   searchText = new FormControl('');
   searchTextChanged = new Subject<void>();
 
+  chartOptions: Partial<ApexOptions>;
+
   constructor(
     store: Store<NotesState>,
     private notesService: NotesService,
     private activatedRoute: ActivatedRoute,
   ) {
     this.allNotes$ = store.select(noteSelectors.allNotes);
+    this.chartOptions = {
+      series: [
+        {
+          name: 'Notes',
+          data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+        }
+      ],
+      chart: {
+        height: 350,
+        type: 'line',
+        toolbar: {
+          show: false,
+        },
+      },
+      tooltip: {
+        enabled: false,
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'straight',
+        lineCap: 'round',
+        width: 1,
+      },
+      markers: {
+        size: 4,
+        strokeDashArray: 0,
+      },
+      grid: {
+        row: {
+          opacity: 0.5
+        }
+      },
+      xaxis: {
+        categories: [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep'
+        ]
+      }
+    };
   }
 
   async searchNotes(): Promise<void> {

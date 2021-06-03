@@ -13,6 +13,7 @@ import {NotesService} from '@services/notes/notes.service';
 import {StoreModule} from '@ngrx/store';
 
 import {metaReducers, reducers} from './store';
+import {NgApexchartsModule} from 'ng-apexcharts';
 
 function configureApp(
   notesService: NotesService,
@@ -35,7 +36,8 @@ function configureApp(
     AppRoutingModule,
     HttpClientModule,
     FontAwesomeModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgApexchartsModule
   ],
   providers: [
     {
