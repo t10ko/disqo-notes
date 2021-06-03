@@ -2,7 +2,7 @@ import {createAction, props} from '@ngrx/store';
 
 export interface NoteEditableInfo {
   title: string;
-  description: string;
+  text: string;
   isEditing: boolean;
 }
 

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { faSearch, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
-import {RestApiService} from '@services/rest-api/rest-api.service';
 
 @Component({
   selector: 'app-homepage',
@@ -12,13 +11,8 @@ export class HomepageComponent implements OnInit {
   faTrash = faTrash;
   faPen = faPen;
 
-  constructor(
-    private restApiService: RestApiService,
-  ) {}
+  constructor() {}
 
-  async ngOnInit(): Promise<void> {
-    const notes = await this.restApiService.get('notes');
-
-    console.log('--------------- NOTES', notes);
+  ngOnInit(): void {
   }
 }

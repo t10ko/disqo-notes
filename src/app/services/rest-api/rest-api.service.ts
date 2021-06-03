@@ -50,31 +50,31 @@ export class RestApiService {
     return result;
   }
 
-  public async get<T>(
+  protected async get<T>(
     action: string,
     params: HttpParams = {}): Promise<T> {
     return this.req<T>('GET', action, params);
   }
 
-  public async post<T>(
+  protected async post<T>(
     action: string,
     params: HttpParams = {}): Promise<T> {
     return this.req<T>('POST', action, params);
   }
 
-  public async put<T>(
+  protected async put<T>(
     action: string,
     params: HttpParams = {}): Promise<T> {
     return this.req<T>('PUT', action, params);
   }
 
-  public async create<T>(
+  protected async create<T>(
     action: string,
     params: HttpParams = {}): Promise<T> {
     return this.req<T>('CREATE', action, params);
   }
 
-  public async delete<T>(
+  protected async delete<T>(
     action: string,
     params: HttpParams = {}): Promise<T> {
     return this.req<T>('DELETE', action, params);
