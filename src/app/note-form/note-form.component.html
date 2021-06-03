@@ -20,7 +20,7 @@
     </small>
   </div>
   <button
-    [disabled]="isEditNoteSubmitting || !editNoteForm.valid || !editNoteForm.dirty || !editNoteForm.touched"
+    [disabled]="isEditNoteSubmitting || !editNoteForm.valid || (isNewNote && (!editNoteForm.dirty || !editNoteForm.touched))"
     [class]="buttonClass"
     type="submit"
   >

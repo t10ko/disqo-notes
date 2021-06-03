@@ -111,16 +111,18 @@ export class NoteFormComponent implements OnInit {
 
     this.isEditNoteSubmitting = true;
     try {
-      const noteInfo = {
-        title: this.noteTitle.value,
-        text: this.noteText.value,
-      };
+      if (this.isNewNote || this.editNoteForm.dirty) {
+        const noteInfo = {
+          title: this.noteTitle.value,
+          text: this.noteText.value,
+        };
 
-      if (this.isNewNote) {
-        await this.notesService.createNote(noteInfo);
-        this.editNoteForm.reset();
-      } else {
-        await this.notesService.updateNote(this.note.id, noteInfo);
+        if (this.isNewNote) {
+          await this.notesService.createNote(noteInfo);
+          this.editNoteForm.reset();
+        } else {
+          await this.notesService.updateNote(this.note.id, noteInfo);
+        }
       }
 
       this.noteSave.emit();
