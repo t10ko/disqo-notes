@@ -5,14 +5,13 @@ import {Router} from '@angular/router';
 import {Store} from '@ngrx/store';
 
 import {NotesState} from '@store/reducers/notes.reducers';
-import {NoteEditableInfo, NoteInfo, NoteList} from '@store/actions/notes.actions';
+import {NoteEditableInfo, NoteInfo} from '@store/actions/notes.actions';
 
 import * as notesActions from '@store/actions/notes.actions';
 import * as notesSelectors from '@store/selectors/notes.selectors';
 
 import {Observable} from 'rxjs';
 import {first} from 'rxjs/operators';
-import {objReduce} from '../../helpers';
 
 const restApiPrefix = 'notes';
 
@@ -21,7 +20,7 @@ const restApiPrefix = 'notes';
 })
 export class NotesService extends RestApiService {
   areNotesLoaded$: Observable<boolean>;
-  allNotes$: Observable<NoteList>;
+  allNotes$: Observable<NoteInfo[]>;
 
   constructor(
     http: HttpClient,
@@ -45,12 +44,9 @@ export class NotesService extends RestApiService {
     return this.get<NoteInfo[]>(restApiPrefix, {q: searchStr});
   }
 
-  async loadAllNotes(): Promise<NoteList> {
-    const notesArr = await this.getNotes();
-    const noteList = notesArr.reduce((res, item) => {
-      res[item.id] = NotesService.prepareNote(item);
-      return res;
-    }, {});
+  async loadAllNotes(): Promise<NoteInfo[]> {
+    const rawNoteList = await this.getNotes();
+    const noteList = rawNoteList.map((item) => NotesService.prepareNote(item));
     this.store.dispatch(notesActions.loadAll({noteList}));
     return noteList;
   }
@@ -58,30 +54,24 @@ export class NotesService extends RestApiService {
   /**
    * Searches for notes and returns their IDs.
    */
-  async searchForNotes(searchStr: string): Promise<number[]> {
-    let noteIds: number[];
+  async searchForNotes(searchStr: string): Promise<NoteInfo[]> {
+    let notes: NoteInfo[];
     if (!searchStr) {
       const areLoaded = await this.areNotesLoaded$
         .pipe(first())
         .toPromise();
 
       if (areLoaded) {
-        const notes = await this.allNotes$
+        notes = await this.allNotes$
           .pipe(first())
           .toPromise();
-        noteIds = objReduce<NoteInfo, number[]>(
-          notes,
-          (acc, note) => (acc.push(note.id), acc),
-          []
-        );
       }
     }
 
-    if (!noteIds) {
-      const notes = await this.getNotes(searchStr);
-      noteIds = notes.map(({id}) => id);
+    if (!notes) {
+      notes = await this.getNotes(searchStr);
     }
-    return noteIds;
+    return notes;
   }
 
   async createNote(noteInfo: NoteEditableInfo): Promise<NoteInfo> {

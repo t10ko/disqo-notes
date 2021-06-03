@@ -10,12 +10,10 @@ export interface NoteInfo extends NoteEditableInfo {
   createdDate: Date;
 }
 
-export type NoteList = {[key: number]: NoteInfo};
-
 export const loadAll = createAction(
   '[Note] Load All',
   props<{
-    noteList: NoteList,
+    noteList: NoteInfo[],
   }>(),
 );
 

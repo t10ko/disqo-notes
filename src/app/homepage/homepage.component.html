@@ -39,8 +39,8 @@
         Notes:
       </h4>
       <app-note
-        *ngFor="let id of displayNotesWithId;"
-        [note]="(allNotes$ | async)[id]"
+        *ngFor="let note of displayNotes;"
+        [note]="note"
         containerClass="mb-5"
       ></app-note>
     </div>
@@ -58,7 +58,7 @@
               Number of notes
             </span>
           </div>
-          <div class="flex-grow-1 flex-shrink-0">
+          <div *ngIf="displayChart" class="flex-grow-1 flex-shrink-0">
             <apx-chart
               [series]="chartOptions.series"
               [chart]="chartOptions.chart"

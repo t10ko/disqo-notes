@@ -2,7 +2,8 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 
-import {NoteList} from '@store/actions/notes.actions';
+import moment from 'moment';
+import {NoteInfo} from '@store/actions/notes.actions';
 import * as noteSelectors from '@store/selectors/notes.selectors';
 
 import {asyncScheduler, Observable, Subject} from 'rxjs';
@@ -27,13 +28,16 @@ export class HomepageComponent implements OnInit {
 
   faSearch = faSearch;
 
-  displayNotesWithId: number[] = [];
-  allNotes$: Observable<NoteList>;
+  displayNotes: NoteInfo[] = [];
+  allNotes$: Observable<NoteInfo[]>;
 
   searchText = new FormControl('');
   searchTextChanged = new Subject<void>();
 
+  displayChart = false;
   chartOptions: Partial<ApexOptions>;
+  private chartData: number[] = [];
+  private chartCats: string[] = [];
 
   constructor(
     store: Store<NotesState>,
@@ -45,9 +49,12 @@ export class HomepageComponent implements OnInit {
       series: [
         {
           name: 'Notes',
-          data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
-        }
+          data: this.chartData,
+        },
       ],
+      xaxis: {
+        categories: this.chartCats,
+      },
       chart: {
         height: 350,
         type: 'line',
@@ -74,35 +81,20 @@ export class HomepageComponent implements OnInit {
         row: {
           opacity: 0.5
         }
-      },
-      xaxis: {
-        categories: [
-          'Jan',
-          'Feb',
-          'Mar',
-          'Apr',
-          'May',
-          'Jun',
-          'Jul',
-          'Aug',
-          'Sep'
-        ]
       }
     };
   }
 
-  async searchNotes(): Promise<void> {
-    const {value: searchQuery} = this.searchText;
-
-    this.displayNotesWithId = await this.notesService
-      .searchForNotes(searchQuery);
+  private static formatChartDate(date: string|number): string {
+    const stillUtc = moment.utc(date).toDate();
+    return moment(stillUtc).local().format('DD | hh:mm');
   }
 
   onSearchTextChanged(): void {
     if (this.searchTextChanged.observers.length === 0) {
       this.searchTextChanged
         .pipe(throttleTime(
-          500,
+          200,
           asyncScheduler,
           { trailing: true }
         ))
@@ -121,10 +113,57 @@ export class HomepageComponent implements OnInit {
       }
 
       this.allNotes$
-        .subscribe(async () => {
+        .subscribe(async (notes) => {
           await this.searchNotes();
+
+          this.displayChart = false;
+          setTimeout(() => {
+            this.initializeChart([...notes]);
+          }, 300);
+
           this.isLoading = false;
         });
     });
+  }
+
+  private async searchNotes(): Promise<void> {
+    const {value: searchQuery} = this.searchText;
+
+    this.displayNotes = await this.notesService
+      .searchForNotes(searchQuery);
+  }
+
+  private initializeChart(notes: NoteInfo[]): void {
+    //  Emptying chart data and categories arrays.
+    [this.chartData, this.chartCats].forEach((list) => {
+      while (list.length > 0) {
+        list.pop();
+      }
+    });
+
+    const lastDate = notes[0].createdDate;
+    const firstDate = notes[notes.length - 1].createdDate;
+
+    //  Calculating time difference between the first
+    //  and the last note's createdDate,
+    //  dividing it to 7 equal parts.
+    const diffTime = Math.abs(lastDate.getTime() - firstDate.getTime());
+    const timeUnit = diffTime / 7;
+
+    //  Finding the "breakpoints" for those time differences.
+    let countTillLast = 0;
+    let lastNoteTime = firstDate.getTime();
+    notes.reverse().forEach((note) => {
+      const createdTime = note.createdDate.getTime();
+      if (lastNoteTime <= createdTime) {
+        this.chartData.push(countTillLast);
+        this.chartCats.push(HomepageComponent.formatChartDate(lastNoteTime));
+
+        lastNoteTime += timeUnit;
+      }
+      countTillLast++;
+    });
+
+    this.displayChart = true;
   }
 }
