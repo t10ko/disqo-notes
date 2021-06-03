@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 import moment from 'moment';
 import {NoteInfo} from '@store/actions/notes.actions';
@@ -41,6 +41,7 @@ export class HomepageComponent implements OnInit {
 
   constructor(
     store: Store<NotesState>,
+    private router: Router,
     private notesService: NotesService,
     private activatedRoute: ActivatedRoute,
   ) {
@@ -100,6 +101,19 @@ export class HomepageComponent implements OnInit {
         ))
         .subscribe(async () => {
           await this.searchNotes();
+
+          const queryParams: {q?: string} = {};
+          const {value: searchQuery} = this.searchText;
+          if (searchQuery) {
+            queryParams.q = searchQuery;
+          }
+          await this.router.navigate(
+          [],
+            {
+              relativeTo: this.activatedRoute,
+              queryParams,
+            }
+          );
         });
     }
     this.searchTextChanged.next();
