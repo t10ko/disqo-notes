@@ -1,0 +1,24 @@
+<div
+  class="note-block p-5"
+  [class]="containerClass"
+>
+  <div *ngIf="!isEditing">
+    <div class="mb-4 d-flex justify-content-between">
+      <h6 class="m-0 fw-bold">{{ note.title }}</h6>
+      <div>
+        <fa-icon (click)="editNote()" class="cursor-pointer ms-3" [icon]="faPen"></fa-icon>
+        <fa-icon (click)="deleteNote()" class="cursor-pointer ms-3" [icon]="faTrash"></fa-icon>
+      </div>
+    </div>
+    <span class="text-inactive pt-2">
+      {{ note.text }}
+    </span>
+  </div>
+
+  <app-note-form
+    (noteSave)="isEditing = false"
+    *ngIf="isEditing"
+    [note]="note"
+    inputGroupClass="mb-4"
+    buttonLabel="Save"></app-note-form>
+</div>

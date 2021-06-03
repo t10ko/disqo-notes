@@ -1,0 +1,33 @@
+<form
+  (ngSubmit)="saveNote($event)"
+  [formGroup]="editNoteForm"
+>
+  <div *ngIf="formError" class="form-error" [class]="inputGroupClass">
+    {{formError}}
+  </div>
+  <div class="input-group" [class]="inputGroupClass">
+    <label *ngIf="showPlaceholders" [for]="'note-title-' + formId" class="ps-1 d-block"><small>Note title</small></label>
+    <input [formControl]="noteTitle" [id]="'note-title-' + formId" type="text">
+    <small *ngIf="hasError(noteTitle)" class="input-error text-wrap mt-2">
+      {{ getFirstError(noteTitle, {
+        required: 'Note title is required.',
+        maxLength: 'Note title cannot be longer than 255 characters.',
+      }) }}
+    </small>
+  </div>
+  <div class="input-group" [class]="inputGroupClass">
+    <label *ngIf="showPlaceholders" [for]="'note-text-' + formId" class="ps-1 d-block"><small>Note</small></label>
+    <textarea [formControl]="noteText" [id]="'note-text-' + formId"></textarea>
+    <small *ngIf="hasError(noteText)" class="input-error text-wrap mt-2">
+      {{ getFirstError(noteText, {
+        required: 'Note text is required.',
+      }) }}
+    </small>
+  </div>
+  <button
+    [disabled]="isEditNoteSubmitting || !editNoteForm.valid || !editNoteForm.dirty || !editNoteForm.touched"
+    type="submit"
+  >
+    {{ buttonLabel }}
+  </button>
+</form>
