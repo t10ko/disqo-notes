@@ -8,9 +8,11 @@ import {NotesState} from '@store/reducers/notes.reducers';
 import {NoteEditableInfo, NoteInfo, NoteList} from '@store/actions/notes.actions';
 
 import * as notesActions from '@store/actions/notes.actions';
-import * as noteSelectors from '@store/selectors/notes.selectors';
+import * as notesSelectors from '@store/selectors/notes.selectors';
 
 import {Observable} from 'rxjs';
+import {first} from 'rxjs/operators';
+import {objReduce} from '../../helpers';
 
 const restApiPrefix = 'notes';
 
@@ -28,46 +30,58 @@ export class NotesService extends RestApiService {
   ) {
     super(http, router);
 
-    this.areNotesLoaded$ = store.select(noteSelectors.areLoaded);
-    this.allNotes$ = store.select(noteSelectors.allNotes);
+    this.areNotesLoaded$ = store.select(notesSelectors.areLoaded);
+    this.allNotes$ = store.select(notesSelectors.allNotes);
   }
 
-  private async getNotes(searchStr = ''): Promise<NoteInfo[]> {
-    return this.get<NoteInfo[]>(restApiPrefix, {q: searchStr});
-  }
-
-  private prepareNote(note: NoteInfo): NoteInfo {
+  private static prepareNote(note: NoteInfo): NoteInfo {
     return {
       ...note,
       createdDate: new Date(note.createdDate),
     };
   }
 
+  private async getNotes(searchStr = ''): Promise<NoteInfo[]> {
+    return this.get<NoteInfo[]>(restApiPrefix, {q: searchStr});
+  }
+
   async loadAllNotes(): Promise<NoteList> {
-    const allNotesList = await this.getNotes();
-    const allNotes = allNotesList.reduce((res, item) => {
-      res[item.id] = this.prepareNote(item);
+    const notesArr = await this.getNotes();
+    const noteList = notesArr.reduce((res, item) => {
+      res[item.id] = NotesService.prepareNote(item);
       return res;
     }, {});
-    this.store.dispatch(notesActions.loadAll(allNotes));
-    return allNotes;
+    this.store.dispatch(notesActions.loadAll({noteList}));
+    return noteList;
   }
 
   /**
    * Searches for notes and returns their IDs.
    */
   async searchForNotes(searchStr: string): Promise<number[]> {
-    let notes = null;
+    let noteIds: number[];
     if (!searchStr) {
-      const areLoaded = await this.areNotesLoaded$.toPromise();
+      const areLoaded = await this.areNotesLoaded$
+        .pipe(first())
+        .toPromise();
+
       if (areLoaded) {
-        notes = await this.allNotes$.toPromise();
+        const notes = await this.allNotes$
+          .pipe(first())
+          .toPromise();
+        noteIds = objReduce<NoteInfo, number[]>(
+          notes,
+          (acc, note) => (acc.push(note.id), acc),
+          []
+        );
       }
     }
-    if (!notes) {
-      notes = await this.getNotes(searchStr);
+
+    if (!noteIds) {
+      const notes = await this.getNotes(searchStr);
+      noteIds = notes.map(({id}) => id);
     }
-    return notes.map(({id}) => id);
+    return noteIds;
   }
 
   async createNote(noteInfo: NoteEditableInfo): Promise<NoteInfo> {
@@ -80,8 +94,8 @@ export class NotesService extends RestApiService {
         text,
       },
     );
-    const note = this.prepareNote(newNote);
-    this.store.dispatch(notesActions.create(note));
+    const note = NotesService.prepareNote(newNote);
+    this.store.dispatch(notesActions.create({note}));
     return note;
   }
 

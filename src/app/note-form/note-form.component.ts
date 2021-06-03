@@ -1,8 +1,10 @@
 import {Component, Input, EventEmitter, OnInit, Output} from '@angular/core';
-import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
-import {objSome, randomString} from '../helpers';
-import {NoteInfo} from '@store/actions/notes.actions';
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {NotesService} from '@services/notes/notes.service';
+
+import {objSome, randomString} from '../helpers';
+
+import {NoteInfo} from '@store/actions/notes.actions';
 
 @Component({
   selector: 'app-note-form',
@@ -13,13 +15,16 @@ export class NoteFormComponent implements OnInit {
   @Output() noteSave = new EventEmitter<void>();
 
   @Input() note: NoteInfo | null = null;
+
   @Input() containerClass = '';
   @Input() inputGroupClass = '';
+  @Input() buttonClass = '';
+
   @Input() showPlaceholders = false;
   @Input() buttonLabel = 'Save';
 
   get isNewNote(): boolean {
-    return !!this.note;
+    return !this.note;
   }
 
   formId = randomString();
@@ -39,11 +44,27 @@ export class NoteFormComponent implements OnInit {
     ],
   });
 
+  validationErrors = {
+    title: {
+      required: 'Note title is required.',
+      maxLength: 'Note title cannot be longer than 255 characters.',
+    },
+    text: {
+      required: 'Note text is required.',
+    },
+  };
+
   constructor(
     private notesService: NotesService,
+    private formBuilder: FormBuilder,
   ) { }
 
   ngOnInit(): void {
+    this.editNoteForm = this.formBuilder.group({
+      title: this.noteTitle,
+      text: this.noteText,
+    });
+
     if (!this.isNewNote) {
       const {title, text} = this.note;
 
@@ -64,7 +85,7 @@ export class NoteFormComponent implements OnInit {
       );
   }
 
-  getFirstError(control: AbstractControl, validationErrors: { [key: string]: string }): string {
+  getFirstError(control: AbstractControl, fieldName: string): string {
     let validator = '';
     const errors = this.editNoteForm &&
       control.invalid &&
@@ -73,7 +94,7 @@ export class NoteFormComponent implements OnInit {
       control.errors;
 
     if (errors) {
-      objSome<string>(validationErrors, (text, field) => {
+      objSome<string>(this.validationErrors[fieldName], (text, field) => {
         const error = errors[field];
         if (error) {
           validator = text;
@@ -90,16 +111,16 @@ export class NoteFormComponent implements OnInit {
 
     this.isEditNoteSubmitting = true;
     try {
+      const noteInfo = {
+        title: this.noteTitle.value,
+        text: this.noteText.value,
+      };
+
       if (this.isNewNote) {
-        await this.notesService.createNote({
-          title: this.noteTitle.value,
-          text: this.noteText.value,
-        });
+        await this.notesService.createNote(noteInfo);
+        this.editNoteForm.reset();
       } else {
-        await this.notesService.updateNote(this.note.id, {
-          title: this.noteTitle.value,
-          text: this.noteText.value,
-        });
+        await this.notesService.updateNote(this.note.id, noteInfo);
       }
 
       this.noteSave.emit();

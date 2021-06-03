@@ -19,8 +19,8 @@ export const initialState: NotesState = {
 
 export const reducer = createReducer(
   initialState,
-  on(authActions.loadAll, (state, allNotes) => ({...state, allNotes, areLoaded: true})),
-  on(authActions.create, (state, noteInfo) => ({...state, allNotes: {[noteInfo.id]: noteInfo, ...state.allNotes}})),
+  on(authActions.loadAll, (state, {noteList: allNotes}) => ({...state, allNotes, areLoaded: true})),
+  on(authActions.create, (state, {note: noteInfo}) => ({...state, allNotes: {[noteInfo.id]: noteInfo, ...state.allNotes}})),
   on(authActions.edit, (state, {id, noteInfo}) => {
     const updatedNotes = {...state.allNotes};
     if (hasOwn(updatedNotes, id)) {
@@ -29,11 +29,11 @@ export const reducer = createReducer(
         ...noteInfo,
       };
     }
-    return {...state, notes: updatedNotes};
+    return {...state, allNotes: updatedNotes};
   }),
   on(authActions.remove, (state, {id}) => {
     const updatedNotes = {...state.allNotes};
     delete updatedNotes[id];
-    return {...state, notes: updatedNotes};
+    return {...state, allNotes: updatedNotes};
   }),
 );

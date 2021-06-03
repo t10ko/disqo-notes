@@ -10,6 +10,9 @@ import {NoteComponent} from './note/note.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {NoteFormComponent} from './note-form/note-form.component';
 import {NotesService} from '@services/notes/notes.service';
+import {StoreModule} from '@ngrx/store';
+
+import {metaReducers, reducers} from './store';
 
 function configureApp(
   notesService: NotesService,
@@ -27,6 +30,7 @@ function configureApp(
     NoteFormComponent
   ],
   imports: [
+    StoreModule.forRoot(reducers, {metaReducers}),
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,

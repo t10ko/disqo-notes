@@ -4,6 +4,12 @@
   font-size: 15px;
 }
 
+input, textarea {
+  &:focus-visible {
+    outline: none;
+  }
+}
+
 input[type="text"] {
   @extend .py-2;
   @extend .px-3;
@@ -14,10 +20,6 @@ input[type="text"] {
   min-width: 308px;
   border-radius: 17.5px;
   background: $input-bg;
-
-  &:focus-visible {
-    outline: none;
-  }
 }
 
 input.input-search {
@@ -49,6 +51,7 @@ input.input-search {
 textarea {
   @extend .py-2;
   @extend .px-3;
+  @extend .d-block;
   @extend .w-100;
 
   min-height: 106px;
@@ -72,6 +75,10 @@ button {
   width: 175px;
   font-weight: 500;
   border-radius: 20px;
+
+  &:disabled {
+    background: $inactive-button-grey;
+  }
 }
 
 .text-inactive {
@@ -82,6 +89,15 @@ button {
   @extend .text-inactive;
 
   padding-bottom: 7px;
+}
+
+.input-error {
+  @extend .d-block;
+  @extend .mt-1;
+  @extend .ms-1;
+
+  font-size: $font-size-xs;
+  color: $error-red;
 }
 
 .note-block {

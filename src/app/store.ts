@@ -2,8 +2,7 @@ import {ActionReducerMap, MetaReducer} from '@ngrx/store';
 
 import {environment} from '@env';
 
-import {reducer as notesReducer} from '@store/reducers/notes.reducers.js';
-import {NotesState} from '@store/actions/notes.actions';
+import {NotesState, reducer as notesReducer} from '@store/reducers/notes.reducers.js';
 
 export interface State {
   notes: NotesState;

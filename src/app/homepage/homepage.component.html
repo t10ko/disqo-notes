@@ -9,7 +9,7 @@
       <div class="input-with-icon">
         <input
           [formControl]="searchText"
-          (input)="searchNotes()"
+          (input)="onSearchTextChanged()"
           class="input-search"
           type="text"
           name="search-text"
@@ -30,6 +30,7 @@
         <app-note-form
           [showPlaceholders]="true"
           inputGroupClass="mb-4"
+          buttonClass="mt-2"
           buttonLabel="Create"></app-note-form>
       </div>
     </div>
@@ -37,7 +38,7 @@
       <app-note
         *ngFor="let id of displayNotesWithId;"
         [note]="(allNotes$ | async)[id]"
-        class="mb-5"
+        containerClass="mb-5"
       ></app-note>
     </div>
     <div class="col">

@@ -1,5 +1,8 @@
 @import "./variables";
 
+$font-size-base: 1rem;
+$font-size-xs: $font-size-base * 0.8;
+
 $spacer: 20px;
 $spacers: (
   0: 0,

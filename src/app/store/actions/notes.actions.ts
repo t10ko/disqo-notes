@@ -14,12 +14,16 @@ export type NoteList = {[key: number]: NoteInfo};
 
 export const loadAll = createAction(
   '[Note] Load All',
-  props<NoteList>(),
+  props<{
+    noteList: NoteList,
+  }>(),
 );
 
 export const create = createAction(
   '[Note] Create',
-  props<NoteInfo>(),
+  props<{
+    note: NoteInfo,
+  }>(),
 );
 
 export const edit = createAction(
