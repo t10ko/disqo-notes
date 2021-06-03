@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { faSearch, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-homepage',
@@ -6,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./homepage.component.scss']
 })
 export class HomepageComponent implements OnInit {
+  faSearch = faSearch;
+  faTrash = faTrash;
+  faPen = faPen;
 
   constructor() { }
 

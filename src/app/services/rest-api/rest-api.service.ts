@@ -3,16 +3,10 @@ import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 
 import {environment as env} from '@env';
 import {Router} from '@angular/router';
-import {hasOwn} from '../../app/helpers';
+import {hasOwn} from '@app/helpers';
 
 export type HttpParam = number | string | null;
 export type HttpParamsItem = HttpParam | HttpParams | HttpParams[] | FormData;
-
-export interface NotesResponse {
-  data: object | null;
-  error: string | null;
-  success: boolean;
-}
 
 export interface HttpParams {
   [param: string]: HttpParamsItem;
@@ -25,8 +19,7 @@ export class RestApiService {
   constructor(
     protected http: HttpClient,
     protected router: Router,
-  ) {
-  }
+  ) {}
 
   private static makeUrl(action: string, params: HttpParams = {}): string {
     let queryString = '';
@@ -55,14 +48,6 @@ export class RestApiService {
       }
     }
     return result;
-  }
-
-  protected getResponseBody(response: HttpResponse<NotesResponse>): NotesResponse {
-    return response.body || {
-      success: false,
-      error: 'Something went wrong.',
-      data: null,
-    };
   }
 
   protected async get<T>(
@@ -119,12 +104,7 @@ export class RestApiService {
       }).toPromise();
 
       // @ts-ignore
-      const {body: info}: NotesResponse = response;
-      if (!info || !info.success) {
-        throw ((info || {}).error || 'Something went wrong.');
-      }
-
-      return info.data;
+      return response.body;
     } catch (error) {
       if (error.status === 0 && error.error instanceof ProgressEvent) {
         throw error.error;

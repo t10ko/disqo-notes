@@ -1,0 +1,90 @@
+@import "./bootstrap";
+
+.icon {
+  font-size: 15px;
+}
+
+input[type="text"] {
+  @extend .p-2;
+
+  font-size: $font-size-sm;
+  border: 2px solid $input-border-color;
+  height: 35px;
+  min-width: 308px;
+  border-radius: 17.5px;
+  background: $input-bg;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+input.input-search {
+  @extend .py-4;
+  @extend .px-5;
+
+  font-size: $font-size-base;
+  border: 2px solid $input-border-color;
+  height: 60px;
+  width: 375px;
+  border-radius: 30px;
+}
+
+.input-with-icon {
+  @extend .position-relative;
+  @extend .d-inline-block;
+
+  .icon {
+    @extend .d-flex;
+    @extend .align-items-center;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+textarea {
+  @extend .p-2;
+  @extend .w-100;
+
+  min-height: 106px;
+  resize: none;
+  overflow: auto;
+  border-radius: $block-border-radius;
+  border: 2px solid $input-border-color;
+  background: $input-bg;
+}
+
+button {
+  @extend .p-2;
+
+  color: $button-text-color;
+  background: $button-blue;
+  border: none;
+
+  font-size: $font-size-base - 0.1rem;
+  height: 40px;
+  width: 175px;
+  font-weight: 500;
+  border-radius: 20px;
+}
+
+.text-inactive {
+  color: $inactive-text-color;
+}
+
+.input-group label {
+  @extend .text-inactive;
+
+  padding-bottom: 7px;
+}
+
+.note-block {
+  @extend .p-4;
+
+  border-radius: $block-border-radius;
+  border: 1px solid $block-border-color;
+  background: $block-bg;
+}

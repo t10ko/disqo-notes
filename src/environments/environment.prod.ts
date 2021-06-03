@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'dummy',
+  apiUrl: 'https://disqo-notes.herokuapp.com/',
 };
