@@ -36,8 +36,8 @@ export class HomepageComponent implements OnInit {
 
   displayChart = false;
   chartOptions: Partial<ApexOptions>;
-  private chartData: number[] = [];
-  private chartCats: string[] = [];
+  private chartData: number[] = new Array(7);
+  private chartCats: string[] = new Array(7);
 
   constructor(
     store: Store<NotesState>,
@@ -55,12 +55,37 @@ export class HomepageComponent implements OnInit {
       ],
       xaxis: {
         categories: this.chartCats,
+        labels: {
+          rotate: -45,
+          rotateAlways: true,
+          style: {
+            fontFamily: 'Montserrat, Roboto, Helvetica, Arial, sans-serif',
+          },
+        },
+      },
+      yaxis: {
+        title: {
+          text: 'Number of notes',
+          style: {
+            fontSize: '10px',
+            fontFamily: 'Montserrat, Roboto, Helvetica, Arial, sans-serif',
+            fontWeight: 400,
+          },
+        },
+        labels: {
+          style: {
+            fontFamily: 'Montserrat, Roboto, Helvetica, Arial, sans-serif',
+          },
+        },
       },
       chart: {
         height: 350,
         type: 'line',
         toolbar: {
           show: false,
+        },
+        zoom: {
+          enabled: false,
         },
       },
       tooltip: {
@@ -149,11 +174,8 @@ export class HomepageComponent implements OnInit {
 
   private initializeChart(notes: NoteInfo[]): void {
     //  Emptying chart data and categories arrays.
-    [this.chartData, this.chartCats].forEach((list) => {
-      while (list.length > 0) {
-        list.pop();
-      }
-    });
+    this.chartData.fill(0);
+    this.chartCats.fill('');
 
     const lastDate = notes[0].createdDate;
     const firstDate = notes[notes.length - 1].createdDate;
@@ -162,21 +184,24 @@ export class HomepageComponent implements OnInit {
     //  and the last note's createdDate,
     //  dividing it to 7 equal parts.
     const diffTime = Math.abs(lastDate.getTime() - firstDate.getTime());
-    const timeUnit = diffTime / 7;
+
+    const timePoints = 7;
+    const timeUnit = diffTime / (timePoints - 1);
 
     //  Finding the "breakpoints" for those time differences.
-    let countTillLast = 0;
-    let lastNoteTime = firstDate.getTime();
+    const startTime = firstDate.getTime();
     notes.reverse().forEach((note) => {
       const createdTime = note.createdDate.getTime();
-      if (lastNoteTime <= createdTime) {
-        this.chartData.push(countTillLast);
-        this.chartCats.push(HomepageComponent.formatChartDate(lastNoteTime));
-
-        lastNoteTime += timeUnit;
+      const timeIndex = Math.ceil((createdTime - startTime) / timeUnit);
+      for (let i = timeIndex; i < timePoints; i++) {
+        this.chartData[i]++;
       }
-      countTillLast++;
     });
+
+    let i = timePoints;
+    while (i--) {
+      this.chartCats[i] = HomepageComponent.formatChartDate(i * timeUnit + startTime);
+    }
 
     this.displayChart = true;
   }

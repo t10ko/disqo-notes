@@ -52,24 +52,18 @@
         <span class="d-inline-block mb-4 ms-1">
           Notes creation chart
         </span>
-        <div class="d-flex flex-direction-row position-relative">
-          <div class="ps-4">
-            <span class="chart-y-label">
-              Number of notes
-            </span>
-          </div>
-          <div *ngIf="displayChart" class="flex-grow-1 flex-shrink-0">
-            <apx-chart
-              [series]="chartOptions.series"
-              [chart]="chartOptions.chart"
-              [xaxis]="chartOptions.xaxis"
-              [dataLabels]="chartOptions.dataLabels"
-              [grid]="chartOptions.grid"
-              [stroke]="chartOptions.stroke"
-              [markers]="chartOptions.markers"
-              [tooltip]="chartOptions.tooltip"
-            ></apx-chart>
-          </div>
+        <div *ngIf="displayChart">
+          <apx-chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [xaxis]="chartOptions.xaxis"
+            [yaxis]="chartOptions.yaxis"
+            [dataLabels]="chartOptions.dataLabels"
+            [grid]="chartOptions.grid"
+            [stroke]="chartOptions.stroke"
+            [markers]="chartOptions.markers"
+            [tooltip]="chartOptions.tooltip"
+          ></apx-chart>
         </div>
       </div>
     </div>
